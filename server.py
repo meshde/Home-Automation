@@ -17,17 +17,20 @@ class Server(tornado.web.RequestHandler):
 
 	def initialize(self,handler):
 		self.handler = handler
+		self.handler.server = self
 		return
 
 	def get(self):
 		self.write("HELLO\n")
 		pass
 
+	@tornado.web.asynchronous
 	def post(self):
 		# data = tornado.escape.json_decode(self.request.body)
 		# print data['light']
 		data = self.request.body
 		self.handler.write(data)
+
 
 class Connection(tornado.websocket.WebSocketHandler):
 	def initialize(self,handler):
@@ -41,7 +44,9 @@ class Connection(tornado.websocket.WebSocketHandler):
 
 	def on_message(self,message):
 		print message
-		self.write_message("Acknowledged!\n")
+		# self.write_message("Acknowledged!\n")
+		self.handler.server.write(message+"\n")
+		self.handler.server.finish()
 		return
 
 	def on_close(self):

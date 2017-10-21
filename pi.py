@@ -1,18 +1,20 @@
 import websocket
 import json
 
-def on_message(self,message):
+def on_message(ws,message):
 	print message
+	mes = raw_input("Enter your message:\t")
+	ws.send(mes)
 	return
 
-def on_close(self):
+def on_close(ws):
 	print "### CLOSED ###"
 	return
 
-def on_error(self):
+def on_error(ws):
 	return
 
-def on_open(self):
+def on_open(ws):
 	print "### OPENED ###"
 	return
 
